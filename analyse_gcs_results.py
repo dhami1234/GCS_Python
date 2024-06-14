@@ -78,6 +78,9 @@ def rename_png_files(folder_path, identifier):
         if file_name.endswith('.png') and 'science' not in file_name and 'beacon' not in file_name:
             base_name = file_name.rsplit('.', 1)[0]
             new_file_name = f"{base_name}_{identifier}.png"
+            #check if file already exists and delete it
+            if os.path.exists(os.path.join(folder_path, new_file_name)):
+                os.remove(os.path.join(folder_path, new_file_name))
             os.rename(
                 os.path.join(folder_path, file_name),
                 os.path.join(folder_path, new_file_name)
