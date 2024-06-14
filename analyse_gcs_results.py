@@ -110,15 +110,15 @@ def main():
     # Print results
     print(f"Linear fit slope: {fit[0]} (solar radii/second)")
     print(f"Speed: {speed_kms:.2f} km/s")
-    
-    # Plot the fit
-    plot_fit(df, fit)
 
     # Delete JSON files
     delete_json_files(os.path.join("..", "json_data"))
 
     # Rename PNG files
     rename_png_files(os.path.join("..", "json_data"), identifier)
+
+    # Plot the fit
+    plot_fit(df, fit)
 
 if __name__ == "__main__":
     main()
