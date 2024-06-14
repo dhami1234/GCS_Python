@@ -304,7 +304,9 @@ def save_params(params,date):
     # Create the directory if it does not exist
     Path('../json_data_day_1').mkdir(parents=True, exist_ok=True)
     # Define the filenames using pathlib
-    filename1 = Path(f'../json_data_day_1/gcs_params{date}.json')
+    # In date string, replace the : with -
+    date_out = date.strftime('%Y-%m-%d %H-%M')
+    filename1 = Path(f'../json_data_day_1/gcs_params{date_out}.json')
     filename2 = Path('../json_data_day_1/gcs_params.json')
     with open(filename1, 'w') as file:
         json.dump(params, file)
@@ -313,7 +315,8 @@ def save_params(params,date):
 
 
 def load_params(date):
-    filename1 = Path(f'../json_data_day_1/gcs_params{date}.json')
+    date_out = date.strftime('%Y-%m-%d %H-%M')
+    filename1 = Path(f'../json_data_day_1/gcs_params{date_out}.json')
     filename = Path('../json_data_day_1/gcs_params.json')
     if os.path.exists(filename1):
         with open(filename1) as file:
@@ -528,7 +531,8 @@ class GCSGui(QtWidgets.QMainWindow):
         # Create the directory if it does not exist
         Path('../json_data_day_1').mkdir(parents=True, exist_ok=True)
         # Define the filenames using pathlib
-        filename1 = Path(f'../json_data_day_1/gcs_params{self.get_d()}.png')
+        date_out = self.get_d().strftime('%Y-%m-%d %H-%M')
+        filename1 = Path(f'../json_data_day_1/gcs_params{date_out}.png')
         self._figure.savefig(filename1)
         self.close()
 
