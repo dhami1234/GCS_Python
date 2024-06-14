@@ -6,4 +6,4 @@ python ../gui.py -rd -soho C3 -stereo COR2 "2013-03-15 08:24" STA SOHO STB
 python ../gui.py -rd -soho C3 -stereo COR2 "2013-03-15 08:39" STA SOHO STB
 python ../gui.py -rd -soho C3 -stereo COR2 "2013-03-15 08:54" STA SOHO STB
 
-python ../analyse_gcs_results.py 'CME_48_science.bat'
+python ../analyse_gcs_results.py CME_48_science.bat
