@@ -302,12 +302,12 @@ def download_helioviewer(date, observatory, instrument, detector):
 
 def save_params(params,date):
     # Create the directory if it does not exist
-    Path('../json_data').mkdir(parents=True, exist_ok=True)
+    Path('../Outputs').mkdir(parents=True, exist_ok=True)
     # Define the filenames using pathlib
     # In date string, replace the : with -
     date_out = date.strftime('%Y-%m-%d %H-%M')
-    filename1 = Path(f'../json_data/gcs_params{date_out}.json')
-    filename2 = Path('../json_data/gcs_params.json')
+    filename1 = Path(f'../Outputs/gcs_params{date_out}.json')
+    filename2 = Path('../Outputs/gcs_params.json')
     with open(filename1, 'w') as file:
         json.dump(params, file)
     with open(filename2, 'w') as file:
@@ -316,8 +316,8 @@ def save_params(params,date):
 
 def load_params(date):
     date_out = date.strftime('%Y-%m-%d %H-%M')
-    filename1 = Path(f'../json_data/gcs_params{date_out}.json')
-    filename = Path('../json_data/gcs_params.json')
+    filename1 = Path(f'../Outputs/gcs_params{date_out}.json')
+    filename = Path('../Outputs/gcs_params.json')
     if os.path.exists(filename1):
         with open(filename1) as file:
             return json.load(file)
@@ -529,10 +529,10 @@ class GCSGui(QtWidgets.QMainWindow):
     def save(self):
         save_params(self.get_params_dict(),self.get_d())
         # Create the directory if it does not exist
-        Path('../json_data').mkdir(parents=True, exist_ok=True)
+        Path('../Outputs').mkdir(parents=True, exist_ok=True)
         # Define the filenames using pathlib
         date_out = self.get_d().strftime('%Y-%m-%d %H-%M')
-        filename1 = Path(f'../json_data/gcs_params{date_out}.png')
+        filename1 = Path(f'../Outputs/gcs_params{date_out}.png')
         self._figure.savefig(filename1)
         self.close()
 
