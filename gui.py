@@ -165,6 +165,11 @@ def download_Cor2_beacon(date, observatory):
             dif_totsec[i] = abs(usr_totsec -gettotsec(hh[i],mm[i],ss[i]))
         min_value = min(dif_totsec)
         min_index= dif_totsec.index(min_value)
+
+        # Check if the minimum time difference is more than 10 minutes (600 seconds)
+        if min_value > 600:
+            sys.exit(f"Error: Closest filename couldn't be found within 10 minutes of {user_datetime}.")
+
         return fnames[min_index],min_index
 
     if observatory == 'STEREO_A':
