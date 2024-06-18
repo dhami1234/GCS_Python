@@ -95,8 +95,14 @@ def main():
         sys.exit(1)
 
     script_file = sys.argv[1]
-    identifier = "beacon" if "beacon" in script_file else "science"
-    
+    identifier = 'AB_science'
+    if 'AB_beacon' in script_file:
+        identifier = 'AB_beacon'
+    if 'A_science' in script_file:
+        identifier = 'A_science'
+    if 'A_beacon' in script_file:
+        identifier = 'A_beacon'
+
     datetimes = extract_datetimes(script_file)
     json_files = find_json_files(datetimes)
     
