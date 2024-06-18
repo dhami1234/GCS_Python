@@ -537,7 +537,7 @@ class GCSGui(QtWidgets.QMainWindow):
         Path('../Outputs').mkdir(parents=True, exist_ok=True)
         # Define the filenames using pathlib
         date_out = self.get_d().strftime('%Y-%m-%d %H-%M')
-        filename1 = Path(f'../Outputs/gcs_params{date_out}.png')
+        filename1 = Path(f'../Outputs/{date_out}.png')
         self._figure.savefig(filename1)
         self.close()
 

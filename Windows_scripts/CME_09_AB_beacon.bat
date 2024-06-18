@@ -5,4 +5,4 @@ python ../gui.py -rd -soho C2 -stereo COR2beacon "2010-05-23 20:24" STA SOHO STB
 python ../gui.py -rd -soho C2 -stereo COR2beacon "2010-05-23 21:54" STA SOHO STB
 python ../gui.py -rd -soho C3 -stereo COR2beacon "2010-05-23 22:24" STA SOHO STB
 
-python ../analyse_gcs_results.py CME_09_beacon.bat
+python ../analyse_gcs_results.py CME_09_AB_beacon.bat

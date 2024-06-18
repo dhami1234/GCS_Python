@@ -3,4 +3,4 @@ python ../gui.py -rd -soho C2 -stereo COR2beacon "2012-06-14 14:39" STA SOHO STB
 python ../gui.py -rd -soho C2 -stereo COR2beacon "2012-06-14 14:54" STA SOHO STB
 python ../gui.py -rd -soho C3 -stereo COR2beacon "2012-06-14 15:24" STA SOHO STB
 
-python ../analyse_gcs_results.py CME_34_beacon.bat
+python ../analyse_gcs_results.py CME_34_AB_beacon.bat
