@@ -110,7 +110,7 @@ def download_HI(date, observatory):
     print("HI base filename",HIbase_filename)
 
     # Define the directory and ensure it exists
-    fits_data_dir = 'fits_data'
+    fits_data_dir = '../fits_data'
     os.makedirs(fits_data_dir, exist_ok=True)
 
     # Construct the full paths for the files in the fits_data directory
@@ -197,7 +197,7 @@ def download_Cor2_beacon(date, observatory):
     print("Cor2beacon base filename",Cor2beaconbase_filename)
 
     # Define the directory and ensure it exists
-    fits_data_dir = 'fits_data'
+    fits_data_dir = '../fits_data'
     os.makedirs(fits_data_dir, exist_ok=True)
 
     # Construct the full paths for the files in the fits_data directory
@@ -223,6 +223,87 @@ def download_Cor2_beacon(date, observatory):
         print("Cor2beacon Base File downloaded")
 
     return Cor2beaconfile,Cor2beaconbasefile
+
+
+import os
+import sys
+from datetime import datetime
+
+def find_local_Cor2_files(date, observatory, fits_data_dir='../fits_data'):
+    user_datetime = date
+    print("Observatory", observatory)
+
+    # Helper Functions
+    def yyyymmdd(dt): return f"{dt.year:04d}{dt.month:02d}{dt.day:02d}"
+
+    def hhMMss(dt): return f"{dt.hour:02d}{dt.minute:02d}{dt.second:02d}"
+
+    def gettotsec(hh, mm, ss): return hh*3600 + mm*60 + ss
+
+    def getnearbyfilename(fnames, userdt):
+        sz = len(fnames)
+        dif_totsec = [0] * sz
+        hh = [0] * sz
+        mm = [0] * sz
+        ss = [0] * sz
+        usr_totsec = gettotsec(user_datetime.hour, user_datetime.minute, user_datetime.second)
+        print("usr_totsec", usr_totsec)
+        for i in range(sz):
+            items = fnames[i].split('_')
+            date_part = items[0]
+            time_part = items[1]
+            file_date = datetime.strptime(date_part, "%Y%m%d")
+            if file_date.date() == user_datetime.date():
+                hh[i] = int(time_part[0:2])
+                mm[i] = int(time_part[2:4])
+                ss[i] = int(time_part[4:6])
+                dif_totsec[i] = abs(usr_totsec - gettotsec(hh[i], mm[i], ss[i]))
+            else:
+                dif_totsec[i] = float('inf')
+        min_value = min(dif_totsec)
+        min_index = dif_totsec.index(min_value)
+
+        # Check if the minimum time difference is more than 10 minutes (600 seconds)
+        if min_value > 600:
+            sys.exit(f"Error: Closest filename couldn't be found within 10 minutes of {user_datetime}.")
+
+        return fnames[min_index], min_index
+
+    if not os.path.exists(fits_data_dir):
+        sys.exit(f"Error: Directory {fits_data_dir} does not exist.")
+
+    # List all .fts files in the directory for the given observatory
+    avail_filenames = [f for f in os.listdir(fits_data_dir) if f.endswith('.fts') and f'd7c2{observatory[-1]}' in f]
+
+    # Sort the filenames
+    avail_filenames.sort()
+
+    print("Available filenames", avail_filenames)
+
+    if observatory not in ['STEREO_A', 'STEREO_B']:
+        sys.exit("Error: Observatory must be 'STEREO_A' or 'STEREO_B'.")
+
+    Cor2beacon_filename, Cor2beacon_fileindex = getnearbyfilename(avail_filenames, user_datetime)
+    print("Cor2beacon_filename, Cor2beacon_fileindex", Cor2beacon_filename, Cor2beacon_fileindex)
+
+    Cor2beaconbase_filename = avail_filenames[Cor2beacon_fileindex - 1]
+    print("Cor2beacon_filename", Cor2beacon_filename)
+    print("Cor2beacon base filename", Cor2beaconbase_filename)
+
+    # Construct the full paths for the files in the fits_data directory
+    Cor2beacon_file_path = os.path.join(fits_data_dir, Cor2beacon_filename)
+    Cor2beaconbase_file_path = os.path.join(fits_data_dir, Cor2beaconbase_filename)
+
+    # Check if Cor2beacon file exists
+    if not os.path.isfile(Cor2beacon_file_path):
+        sys.exit(f"Error: Cor2beacon file does not exist in fits_data directory - [{Cor2beacon_file_path}]")
+
+    # Check if Cor2beacon base file exists
+    if not os.path.isfile(Cor2beaconbase_file_path):
+        sys.exit(f"Error: Cor2beacon base file does not exist in fits_data directory - [{Cor2beaconbase_file_path}]")
+
+    return Cor2beacon_file_path, Cor2beaconbase_file_path
+
 
 def running_difference(a, b):
     a_data = (a.data - np.mean(a.data)) / np.std(a.data)
@@ -277,7 +358,8 @@ def load_image(spacecraft: str, detector: str, date: dt.datetime, runndiff: bool
         else:
             return Map(f1[1])   
     elif detector == 'COR2beacon':
-        f1 = download_Cor2_beacon(date, observatory)
+        # f1 = download_Cor2_beacon(date, observatory)
+        f1 = find_local_Cor2_files(date, observatory)
         if runndiff:
             return running_difference_COR2beacon(Map(f1[1]),Map(f1[0])) 
         else:
@@ -566,8 +648,8 @@ def main():
     qapp.exec_()
 
     #Delete the fits_data directory if it exists
-    if os.path.exists('fits_data'):
-        shutil.rmtree('fits_data')
+    # if os.path.exists('fits_data'):
+    #     shutil.rmtree('fits_data')
 
 
 
