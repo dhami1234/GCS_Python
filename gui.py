@@ -278,8 +278,6 @@ def find_local_Cor2_files(date, observatory, fits_data_dir='../fits_data'):
     # Sort the filenames
     avail_filenames.sort()
 
-    print("Available filenames", avail_filenames)
-
     if observatory not in ['STEREO_A', 'STEREO_B']:
         sys.exit("Error: Observatory must be 'STEREO_A' or 'STEREO_B'.")
 
