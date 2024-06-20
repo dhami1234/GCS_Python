@@ -74,7 +74,7 @@ def download_HI(date, observatory):
         mm = [0]*sz
         ss = [0]*sz
         usr_totsec = gettotsec(user_datetime.hour,user_datetime.minute,user_datetime.second)
-        print("usr_totsec",usr_totsec)
+        # print("usr_totsec",usr_totsec)
         for i in range(sz):
             items   = fnames[i].split('_')
             hh[i]     = int(items[1][0:2])
@@ -149,14 +149,14 @@ def download_Cor2_beacon(date, observatory):
 
     def gettotsec(hh,mm,ss) : return hh*3600+mm*60+ss
 
-    def getnearbyfilename(fnames,userdt):
+    def getnearbyfilename(fnames,userdt,base=False):
         sz = len(fnames)
         dif_totsec = [0]*sz
         hh = [0]*sz
         mm = [0]*sz
         ss = [0]*sz
-        usr_totsec = gettotsec(user_datetime.hour,user_datetime.minute,user_datetime.second)
-        print("usr_totsec",usr_totsec)
+        usr_totsec = gettotsec(userdt.hour,userdt.minute,userdt.second)
+        # print("usr_totsec",usr_totsec)
         for i in range(sz):
             items   = fnames[i].split('_')
             hh[i]     = int(items[1][0:2])
@@ -167,8 +167,8 @@ def download_Cor2_beacon(date, observatory):
         min_index= dif_totsec.index(min_value)
 
         # Check if the minimum time difference is more than 10 minutes (600 seconds)
-        if min_value > 600:
-            sys.exit(f"Error: Closest filename couldn't be found within 10 minutes of {user_datetime}.")
+        if min_value > 600 and not base:
+            sys.exit(f"Error: Closest filename couldn't be found within 10 minutes of {userdt}.")
 
         return fnames[min_index],min_index
 
@@ -190,9 +190,14 @@ def download_Cor2_beacon(date, observatory):
 
     
     Cor2beacon_filename, Cor2beacon_fileindex = getnearbyfilename(avail_filenames,user_datetime)
-    print("Cor2beacon_filename, Cor2beacon_fileindex",Cor2beacon_filename, Cor2beacon_fileindex)
+    # print("Cor2beacon_filename, Cor2beacon_fileindex",Cor2beacon_filename, Cor2beacon_fileindex)
 
-    Cor2beaconbase_filename = avail_filenames[Cor2beacon_fileindex-2]
+    base_time = user_datetime - dt.timedelta(hours=1)
+    print("Time",user_datetime)
+    print("Base time",base_time)
+    Cor2beaconbase_filename, Cor2beaconbase_fileindex = getnearbyfilename(avail_filenames,base_time, True)
+
+    # Cor2beaconbase_filename = avail_filenames[Cor2beacon_fileindex-2]
     print("Cor2beacon_filename",Cor2beacon_filename)
     print("Cor2beacon base filename",Cor2beaconbase_filename)
 
@@ -240,20 +245,20 @@ def find_local_Cor2_files(date, observatory, fits_data_dir='../fits_data'):
 
     def gettotsec(hh, mm, ss): return hh*3600 + mm*60 + ss
 
-    def getnearbyfilename(fnames, userdt):
+    def getnearbyfilename(fnames, userdt, base=False):
         sz = len(fnames)
         dif_totsec = [0] * sz
         hh = [0] * sz
         mm = [0] * sz
         ss = [0] * sz
-        usr_totsec = gettotsec(user_datetime.hour, user_datetime.minute, user_datetime.second)
-        print("usr_totsec", usr_totsec)
+        usr_totsec = gettotsec(userdt.hour, userdt.minute, userdt.second)
+        # print("usr_totsec", usr_totsec)
         for i in range(sz):
             items = fnames[i].split('_')
             date_part = items[0]
             time_part = items[1]
             file_date = datetime.strptime(date_part, "%Y%m%d")
-            if file_date.date() == user_datetime.date():
+            if file_date.date() == userdt.date():
                 hh[i] = int(time_part[0:2])
                 mm[i] = int(time_part[2:4])
                 ss[i] = int(time_part[4:6])
@@ -264,8 +269,8 @@ def find_local_Cor2_files(date, observatory, fits_data_dir='../fits_data'):
         min_index = dif_totsec.index(min_value)
 
         # Check if the minimum time difference is more than 10 minutes (600 seconds)
-        if min_value > 600:
-            sys.exit(f"Error: Closest filename couldn't be found within 10 minutes of {user_datetime}.")
+        if min_value > 600 and not base:
+            sys.exit(f"Error: Closest filename couldn't be found within 10 minutes of {userdt}.")
 
         return fnames[min_index], min_index
 
@@ -282,9 +287,15 @@ def find_local_Cor2_files(date, observatory, fits_data_dir='../fits_data'):
         sys.exit("Error: Observatory must be 'STEREO_A' or 'STEREO_B'.")
 
     Cor2beacon_filename, Cor2beacon_fileindex = getnearbyfilename(avail_filenames, user_datetime)
-    print("Cor2beacon_filename, Cor2beacon_fileindex", Cor2beacon_filename, Cor2beacon_fileindex)
+    # print("Cor2beacon_filename, Cor2beacon_fileindex", Cor2beacon_filename, Cor2beacon_fileindex)
 
-    Cor2beaconbase_filename = avail_filenames[Cor2beacon_fileindex - 1]
+    # Cor2beaconbase_filename = avail_filenames[Cor2beacon_fileindex - 1]
+    
+    base_time = user_datetime - dt.timedelta(hours=1)
+    print("Time", user_datetime)
+    print("Base time", base_time)
+    Cor2beaconbase_filename, Cor2beaconbase_fileindex = getnearbyfilename(avail_filenames, base_time, True)
+
     print("Cor2beacon_filename", Cor2beacon_filename)
     print("Cor2beacon base filename", Cor2beaconbase_filename)
 
