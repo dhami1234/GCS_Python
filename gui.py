@@ -367,8 +367,8 @@ def load_image(spacecraft: str, detector: str, date: dt.datetime, runndiff: bool
         else:
             return Map(f1[1])   
     elif detector == 'COR2beacon':
-        # f1 = download_Cor2_beacon(date, observatory)
-        f1 = find_local_Cor2_files(date, observatory)
+        f1 = download_Cor2_beacon(date, observatory)
+        # f1 = find_local_Cor2_files(date, observatory)
         if runndiff:
             return running_difference_COR2beacon(Map(f1[1]),Map(f1[0])) 
         else:
@@ -594,7 +594,7 @@ class GCSGui(QtWidgets.QMainWindow):
                     'grid': dict(lw=0.5),
                     'point cloud': dict(ms=2)
                 }[draw_mode]
-                p = ax.plot_coord(mesh, style, color='blue', scalex=False, scaley=False, **params)[0]
+                p = ax.plot_coord(mesh, style, color='green', scalex=False, scaley=False, **params)[0]
                 self._mesh_plots.append(p)
             else:
                 # update plot
